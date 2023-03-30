@@ -1,0 +1,31 @@
+name: "Stale Issues Finder"
+description: "Find what issues have been stale for a given time"
+author: paritytech
+branding:
+  icon: zoom-in
+  color: white
+inputs:
+  GITHUB_TOKEN:
+    required: true
+    description: The token to access the repo
+  repo:
+    required: false
+    description: The repository to fetch the issues from
+  owner:
+    required: false
+    description: The name of the org/user that owns the repository
+  days-stale:
+    required: false
+    description: How many days have to pass to consider an action "stale"
+    default: '5'
+outputs:
+  repo:
+    description: 'The name of the repo in owner/repo pattern'
+  stale:
+    description: 'A JSON object with the data'
+  message:
+    description: 'A markdown formatted message'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
