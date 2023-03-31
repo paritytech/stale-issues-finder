@@ -2,12 +2,12 @@
   "name": "stale-issues-finder",
   "version": "0.0.1",
   "description": "Find what issues have been stale for a given time",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
   "engines": {
     "node": ">=18.0.0"
   },
   "scripts": {
-    "build": "ncc build src/index.ts"
+    "build": "ncc build"
   },
   "repository": {
     "type": "git",

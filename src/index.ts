@@ -1,8 +1,9 @@
-import { getInput, info, setOutput } from "@actions/core";
+import { getBooleanInput, getInput, info, setOutput } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { Context } from "@actions/github/lib/context";
 import moment from "moment";
-import { fetchIssues, IssueData } from "./github/issuesParser";
+import { byNoComments, olderThanDays } from "./filters";
+import { fetchIssues } from "./github/issuesParser";
 
 const daysSinceDate = (date: string): number => {
     return moment().diff(moment(date), 'days')
@@ -30,9 +31,23 @@ const getRepo = (ctx: Context): { owner: string, repo: string } => {
     return { repo, owner };
 }
 
+const filterIssues = (issues: IssueData[], filters: Filters) => {
+    let filteredData = issues;
+    if (filters.daysStale) {
+        filteredData = filteredData.filter(is => olderThanDays(is, filters.daysStale));
+    }
+    if (filters.noComments) {
+        filteredData = filteredData.filter(byNoComments);
+    }
+
+    return filteredData;
+}
+
 const runAction = async (ctx: Context) => {
     const repo = getRepo(ctx);
     const token = getInput("GITHUB_TOKEN", { required: true });
+
+    const noComments = !!getInput("noComments") ? getBooleanInput("noComments") : false;
     const inputDays = Number.parseInt(getInput("days-stale", { required: false }));
     const daysStale = isNaN(inputDays) ? 5 : inputDays;
 
@@ -46,7 +61,9 @@ const runAction = async (ctx: Context) => {
     setOutput("stale", amountOfStaleIssues);
 
     if (amountOfStaleIssues > 0) {
-        const cleanedData = staleIssues.map(issue => {
+        const filteredData = filterIssues(staleIssues, { noComments, daysStale });
+
+        let cleanedData = filteredData.map(issue => {
             return {
                 url: issue.html_url,
                 title: issue.title,
