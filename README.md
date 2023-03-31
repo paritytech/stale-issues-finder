@@ -1,3 +1,4 @@
+
 # Stale Issue Finder 
 Finds outdated issues and generates an output data & message.
 
@@ -51,19 +52,26 @@ jobs:
 ### Inputs
 You can find all the inputs in [the action file](./action.yml) but let's walk through each one of them:
 
-- `GITHUB_TOKEN`: Token to access to the repository issues. If you are refering to a different repository this need to be a PERSONAL ACCESS TOKEN
+- `GITHUB_TOKEN`: Token to access to the repository issues. If you are access a different repository be sure to read the [`accessing other repositories`](#accessing-other-repositories) section.
   - **required**
   - If using on the same repo, you can simply use `${{ github.token }}`.
 - `repo`: name of the repository. Example: `https://github.com/paritytech/REPO-NAME-GOES-HERE`
-  - **defaults** to the repo where this action is ran.
+  - **defaults** to the repo where this action will be run.
   - If set, you also need to set `owner`.
   - Setting this value and `owner` allows you to run this action in other repositories (useful if you want to aggregate all the stale issues)
-  - If set, be sure that the `GITHUB_TOKEN` is a Personal Access Token, as the repository's default token can not access other (private) repos.
+  - If set, be sure to read the [`accessing other repositories`](#accessing-other-repositories) section.
 - `owner`: name of the organization/user where the repository is. Example: `https://github.com/OWNER-NAME/stale-issues-finder`
   - **defaults** to the organization where this action is ran.
   - If set, you also need to set `repo`. 
 - `days-stale`: Amount of days since the last activity for an issue to be considered *stale*.
   - **default**: 5
+
+#### Accessing other repositories
+
+The action has the ability to access other repositories but if it can read it or not depends of the repository's visibility.
+
+The default `${{ github.token }}` variable has enough permissions to read the issues in **public repositories**.
+If you want this action to access to the issues in a private repository, then you will need a `Personal Access Token` with `repo` permissions.
 
 ### Outputs
 Outputs are needed for your chained actions. If you want to use this information, remember to set an `id` field in the step so you can access it.
@@ -206,6 +214,7 @@ Stale issues this week:
 To work on this app, you require
 - `Node 18.x`
 - `yarn`
+
 Use `yarn install` to set up the project.
 `yarn test` runs the unit tests.
 `yarn build` compiles the TypeScript code to JavaScript.
