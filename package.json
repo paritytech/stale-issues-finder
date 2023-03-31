@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Find what issues have been stale for a given time",
   "main": "dist/index.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "build": "ncc build src/index.ts"
   },

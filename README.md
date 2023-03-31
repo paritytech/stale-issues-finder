@@ -201,3 +201,11 @@ Stale issues this week:
   - [La la la](https://github.com/example/xyz/issues/15) - Stale for 25 days
   - [Help with lalilulelo](https://github.comexample/xyz/issues/12) - Stale for 21 days
   - [Fix the issue with the word 'Patriot'](https://github.com/example/xyz/issues/3) - Stale for 18 days
+
+## Development
+To work on this app, you require
+- `Node 18.x`
+- `yarn`
+Use `yarn install` to set up the project.
+`yarn test` runs the unit tests.
+`yarn build` compiles the TypeScript code to JavaScript.
