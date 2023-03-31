@@ -57,12 +57,10 @@ You can find all the inputs in [the action file](./action.yml) but let's walk th
   - If using on the same repo, you can simply use `${{ github.token }}`.
 - `repo`: name of the repository. Example: `https://github.com/paritytech/REPO-NAME-GOES-HERE`
   - **defaults** to the repo where this action will be run.
-  - If set, you also need to set `owner`.
   - Setting this value and `owner` allows you to run this action in other repositories (useful if you want to aggregate all the stale issues)
   - If set, be sure to read the [`accessing other repositories`](#accessing-other-repositories) section.
 - `owner`: name of the organization/user where the repository is. Example: `https://github.com/OWNER-NAME/stale-issues-finder`
   - **defaults** to the organization where this action is ran.
-  - If set, you also need to set `repo`. 
 - `days-stale`: Amount of days since the last activity for an issue to be considered *stale*.
   - **default**: 5
 

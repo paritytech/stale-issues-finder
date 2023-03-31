@@ -17,14 +17,17 @@ const generateMarkdownMessage = (issues: IssueData[], repo: { owner: string, rep
 }
 
 const getRepo = (ctx: Context): { owner: string, repo: string } => {
-    const repo = getInput("repo", { required: false });
-    const owner = getInput("owner", { required: false });
-
-    if (repo && owner) {
-        return { repo, owner };
-    } else {
-        return ctx.repo;
+    let repo = getInput("repo", { required: false });
+    if (!repo) {
+        repo = ctx.repo.repo;
     }
+
+    let owner = getInput("owner", { required: false });
+    if (!owner) {
+        owner = ctx.repo.owner;
+    }
+
+    return { repo, owner };
 }
 
 const runAction = async (ctx: Context) => {
