@@ -21,10 +21,12 @@ inputs:
 outputs:
   repo:
     description: 'The name of the repo in owner/repo pattern'
-  stale:
+  data:
     description: 'A JSON object with the data'
   message:
     description: 'A markdown formatted message'
+  stale:
+    description: 'Amount of stale issues. 0 if none found.'
 
 runs:
   using: 'docker'

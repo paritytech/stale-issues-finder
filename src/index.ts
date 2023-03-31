@@ -1,4 +1,4 @@
-import { getInput, setOutput } from "@actions/core";
+import { getInput, info, setOutput } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { Context } from "@actions/github/lib/context";
 import moment from "moment";
@@ -32,24 +32,31 @@ const runAction = async (ctx: Context) => {
     const token = getInput("GITHUB_TOKEN", { required: true });
     const inputDays = Number.parseInt(getInput("days-stale", { required: false }));
     const daysStale = isNaN(inputDays) ? 5 : inputDays;
-    const stale = isNaN(daysStale);
-    console.log("daysStale", daysStale, stale);
 
     const octokit = getOctokit(token);
     const staleIssues = await fetchIssues(octokit, daysStale, repo);
 
-    const cleanedData = staleIssues.map(issue => {
-        return {
-            url: issue.html_url,
-            title: issue.title,
-            daysStale: daysSinceDate(issue.updated_at)
-        }
-    });
+    const amountOfStaleIssues = staleIssues.length;
 
+    info(`Found ${amountOfStaleIssues} stale issues.`);
     setOutput("repo", `${repo.owner}/${repo.repo}`);
-    setOutput("stale", JSON.stringify(cleanedData));
-    const message = generateMarkdownMessage(staleIssues, repo);
-    setOutput("message", message);
+    setOutput("stale", amountOfStaleIssues);
+
+    if (amountOfStaleIssues > 0) {
+        const cleanedData = staleIssues.map(issue => {
+            return {
+                url: issue.html_url,
+                title: issue.title,
+                daysStale: daysSinceDate(issue.updated_at)
+            }
+        });
+
+        setOutput("data", JSON.stringify(cleanedData));
+        const message = generateMarkdownMessage(staleIssues, repo);
+        setOutput("message", message);
+    } else {
+        setOutput("message", `### Repo ${repo.owner}/${repo.repo} has no stale issues`);
+    }
 }
 
 runAction(context);
