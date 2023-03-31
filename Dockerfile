@@ -10,4 +10,8 @@ COPY . .
 
 RUN yarn run build
 
-ENTRYPOINT ["node", "/action/dist/index.js"]
+FROM node:18-slim
+
+COPY --from=Builder /action/dist /action
+
+ENTRYPOINT ["node", "/action/index.js"]

@@ -4,7 +4,7 @@
   "description": "Find what issues have been stale for a given time",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "ncc build src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
   "devDependencies": {
     "@types/moment": "^2.13.0",
     "@types/node": "^18.15.11",
+    "@vercel/ncc": "^0.36.1",
     "typescript": "^5.0.2"
   }
 }
