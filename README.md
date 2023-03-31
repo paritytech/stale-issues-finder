@@ -214,5 +214,5 @@ To work on this app, you require
 - `yarn`
 
 Use `yarn install` to set up the project.
-`yarn test` runs the unit tests.
+
 `yarn build` compiles the TypeScript code to JavaScript.
