@@ -18,6 +18,10 @@ inputs:
     required: false
     description: How many days have to pass to consider an action "stale"
     default: '5'
+  noComments:
+    required: false
+    description: If true, it will only collect issues with NO comments.
+    default: false
 outputs:
   repo:
     description: 'The name of the repo in owner/repo pattern'

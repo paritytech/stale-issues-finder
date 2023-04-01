@@ -63,6 +63,8 @@ You can find all the inputs in [the action file](./action.yml) but let's walk th
   - **defaults** to the organization where this action is ran.
 - `days-stale`: Amount of days since the last activity for an issue to be considered *stale*.
   - **default**: 5
+- `noComments`: Boolean. If the action should only fetch issues that have 0 comments.
+  - **default**: false
 
 #### Accessing other repositories
 
