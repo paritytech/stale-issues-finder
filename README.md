@@ -176,7 +176,7 @@ jobs:
           owner: example
           repo: abc
       - name: Fetch xyz issues
-        id: polkadot
+        id: xyz
         uses: paritytech/stale-issues-finder@main
         with:
           GITHUB_TOKEN: ${{ github.token }}
