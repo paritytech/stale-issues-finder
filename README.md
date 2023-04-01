@@ -65,6 +65,10 @@ You can find all the inputs in [the action file](./action.yml) but let's walk th
   - **default**: 5
 - `noComments`: Boolean. If the action should only fetch issues that have 0 comments.
   - **default**: false
+- `ignoreAuthors`: Array of usernames that, if an issue was created by them, will be ignored.
+  - Short for `Ignore issues coming from these authors`.
+  - **optional**
+  - **Important**: If set, be sure to read the [Warning about authors field](#warning-about-authors-field) section.
 
 #### Accessing other repositories
 
@@ -72,6 +76,30 @@ The action has the ability to access other repositories but if it can read it or
 
 The default `${{ github.token }}` variable has enough permissions to read the issues in **public repositories**.
 If you want this action to access to the issues in a private repository, then you will need a `Personal Access Token` with `repo` permissions.
+
+### Warning about authors field
+The authors field accepts an array or a single value, [but only with some particular format](https://github.com/actions/toolkit/issues/184#issuecomment-1198653452), so it is important to follow it.
+It accepts either:
+```yml
+authors: username1
+```
+or an array of authors using a `pipe`:
+```yml
+authors: |
+  username1
+  username2
+  username3
+```
+It **does not** support the following type of arrays:
+```yml
+# not this one
+authors:
+  - username1
+  - username2
+
+# also doesn't support this one
+authors: ["username1", "username2"]
+```
 
 ### Outputs
 Outputs are needed for your chained actions. If you want to use this information, remember to set an `id` field in the step so you can access it.
