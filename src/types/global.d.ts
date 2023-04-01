@@ -6,7 +6,8 @@ declare global {
         updated_at: string;
         number: number;
         comments: number;
-        user: { login: string }
+        /** If user was deleted it is going to be null */
+        user: { login: string } | null
     }
 
     interface Repo {

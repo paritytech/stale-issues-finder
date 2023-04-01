@@ -64,6 +64,7 @@ You can find all the inputs in [the action file](./action.yml) but let's walk th
 - `days-stale`: Amount of days since the last activity for an issue to be considered *stale*.
   - **default**: 5
 - `noComments`: Boolean. If the action should only fetch issues that have 0 comments.
+  - Short for `Ignore issues that have comments`.
   - **default**: false
 - `ignoreAuthors`: Array of usernames that, if an issue was created by them, will be ignored.
   - Short for `Ignore issues coming from these authors`.

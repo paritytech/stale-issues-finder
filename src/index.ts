@@ -9,6 +9,19 @@ const daysSinceDate = (date: string): number => {
     return moment().diff(moment(date), 'days')
 }
 
+const getFiltersFromInput = (): Filters => {
+    const inputDays = Number.parseInt(getInput("days-stale", { required: false }));
+    const daysStale = isNaN(inputDays) ? 5 : inputDays;
+
+    const noComments = !!getInput("noComments") ? getBooleanInput("noComments") : false;
+
+    const ignoreAuthors = getMultilineInput("ignoreAuthors");
+
+    return {
+        daysStale, noComments, notFromAuthor: ignoreAuthors
+    }
+}
+
 const generateMarkdownMessage = (issues: IssueData[], repo: { owner: string, repo: string; }) => {
     const messages = issues.map(issue => {
         return `  - [${issue.title}](${issue.html_url}) - Stale for ${daysSinceDate(issue.updated_at)} days`;
@@ -50,13 +63,10 @@ const runAction = async (ctx: Context) => {
     const repo = getRepo(ctx);
     const token = getInput("GITHUB_TOKEN", { required: true });
 
-    const noComments = !!getInput("noComments") ? getBooleanInput("noComments") : false;
-    const ignoreAuthors = getMultilineInput("ignoreAuthors");
-    const inputDays = Number.parseInt(getInput("days-stale", { required: false }));
-    const daysStale = isNaN(inputDays) ? 5 : inputDays;
+    const filters = getFiltersFromInput();
 
     const octokit = getOctokit(token);
-    const staleIssues = await fetchIssues(octokit, daysStale, repo);
+    const staleIssues = await fetchIssues(octokit, repo);
 
     const amountOfStaleIssues = staleIssues.length;
 
@@ -65,7 +75,7 @@ const runAction = async (ctx: Context) => {
     setOutput("stale", amountOfStaleIssues);
 
     if (amountOfStaleIssues > 0) {
-        const filteredData = filterIssues(staleIssues, { noComments, daysStale, notFromAuthor: ignoreAuthors });
+        const filteredData = filterIssues(staleIssues, filters);
 
         let cleanedData = filteredData.map(issue => {
             return {
