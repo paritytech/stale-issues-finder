@@ -191,7 +191,7 @@ on:
     - cron:  '0 9 * * 1'
 
 jobs:
-  sync:
+  fetch-issues:
     runs-on: ubuntu-latest
     steps:
       - name: Fetch issues from here
