@@ -6,6 +6,7 @@ declare global {
         updated_at: string;
         number: number;
         comments: number;
+        user: { login: string }
     }
 
     interface Repo {
@@ -14,8 +15,9 @@ declare global {
     }
 
     interface Filters {
-        noComments?:boolean;
-        daysStale:number;
+        noComments?: boolean;
+        daysStale: number;
+        notFromAuthor: string[];
     }
 }
 

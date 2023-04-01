@@ -2,7 +2,7 @@ import { getBooleanInput, getInput, info, setOutput } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { Context } from "@actions/github/lib/context";
 import moment from "moment";
-import { byNoComments, olderThanDays } from "./filters";
+import { byNoComments, isNotFromAuthor, olderThanDays } from "./filters";
 import { fetchIssues } from "./github/issuesParser";
 
 const daysSinceDate = (date: string): number => {
@@ -38,6 +38,9 @@ const filterIssues = (issues: IssueData[], filters: Filters) => {
     }
     if (filters.noComments) {
         filteredData = filteredData.filter(byNoComments);
+    }
+    if (filters.notFromAuthor && filters.notFromAuthor.length > 0) {
+        filteredData = filteredData.filter(is => isNotFromAuthor(is, filters.notFromAuthor));
     }
 
     return filteredData;
