@@ -1,4 +1,4 @@
-import { getBooleanInput, getInput, getMultilineInput, info, setOutput } from "@actions/core";
+import { getBooleanInput, getInput, getMultilineInput, info, setOutput, summary } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { Context } from "@actions/github/lib/context";
 import moment from "moment";
@@ -81,15 +81,25 @@ const runAction = async (ctx: Context) => {
             return {
                 url: issue.html_url,
                 title: issue.title,
-                daysStale: daysSinceDate(issue.updated_at)
+                daysStale: daysSinceDate(issue.updated_at),
+                number: issue.number
             }
         });
 
         setOutput("data", JSON.stringify(cleanedData));
         const message = generateMarkdownMessage(staleIssues, repo);
         setOutput("message", message);
+
+        await summary.addHeading(`${repo.owner}/${repo.repo}`)
+            .addHeading(`${amountOfStaleIssues} stale issues`, 3)
+            .addTable([
+                [{ data: "Title", header: true }, { data: "Days stale", header: true }, { data: "Link", header: true }],
+                ...cleanedData.map(issue => [issue.title, issue.daysStale.toString(), `${repo.owner}/${repo.repo}#${issue.number}`] as string[])
+            ])
+            .addLink("See all issues", `https://github.com/${repo.owner}/${repo.repo}/issues`).write();
     } else {
         setOutput("message", `### Repo ${repo.owner}/${repo.repo} has no stale issues`);
+        await summary.addHeading(`${repo.owner}/${repo.repo}`).addHeading("No stale issues", 3).addEOL().write();
     }
 }
 
