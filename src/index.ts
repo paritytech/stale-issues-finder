@@ -1,11 +1,25 @@
-import { getInput, info, setOutput } from "@actions/core";
+import { getBooleanInput, getInput, getMultilineInput, info, setOutput } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { Context } from "@actions/github/lib/context";
 import moment from "moment";
-import { fetchIssues, IssueData } from "./github/issuesParser";
+import { byNoComments, isNotFromAuthor, olderThanDays } from "./filters";
+import { fetchIssues } from "./github/issuesParser";
 
 const daysSinceDate = (date: string): number => {
     return moment().diff(moment(date), 'days')
+}
+
+const getFiltersFromInput = (): Filters => {
+    const inputDays = Number.parseInt(getInput("days-stale", { required: false }));
+    const daysStale = isNaN(inputDays) ? 5 : inputDays;
+
+    const noComments = !!getInput("noComments") ? getBooleanInput("noComments") : false;
+
+    const ignoreAuthors = getMultilineInput("ignoreAuthors");
+
+    return {
+        daysStale, noComments, notFromAuthor: ignoreAuthors
+    }
 }
 
 const generateMarkdownMessage = (issues: IssueData[], repo: { owner: string, repo: string; }) => {
@@ -30,14 +44,29 @@ const getRepo = (ctx: Context): { owner: string, repo: string } => {
     return { repo, owner };
 }
 
+const filterIssues = (issues: IssueData[], filters: Filters) => {
+    let filteredData = issues;
+    if (filters.daysStale) {
+        filteredData = filteredData.filter(is => olderThanDays(is, filters.daysStale));
+    }
+    if (filters.noComments) {
+        filteredData = filteredData.filter(byNoComments);
+    }
+    if (filters.notFromAuthor && filters.notFromAuthor.length > 0) {
+        filteredData = filteredData.filter(is => isNotFromAuthor(is, filters.notFromAuthor));
+    }
+
+    return filteredData;
+}
+
 const runAction = async (ctx: Context) => {
     const repo = getRepo(ctx);
     const token = getInput("GITHUB_TOKEN", { required: true });
-    const inputDays = Number.parseInt(getInput("days-stale", { required: false }));
-    const daysStale = isNaN(inputDays) ? 5 : inputDays;
+
+    const filters = getFiltersFromInput();
 
     const octokit = getOctokit(token);
-    const staleIssues = await fetchIssues(octokit, daysStale, repo);
+    const staleIssues = await fetchIssues(octokit, repo);
 
     const amountOfStaleIssues = staleIssues.length;
 
@@ -46,7 +75,9 @@ const runAction = async (ctx: Context) => {
     setOutput("stale", amountOfStaleIssues);
 
     if (amountOfStaleIssues > 0) {
-        const cleanedData = staleIssues.map(issue => {
+        const filteredData = filterIssues(staleIssues, filters);
+
+        let cleanedData = filteredData.map(issue => {
             return {
                 url: issue.html_url,
                 title: issue.title,
