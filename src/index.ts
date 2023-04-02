@@ -1,4 +1,4 @@
-import { getBooleanInput, getInput, getMultilineInput, info, setOutput } from "@actions/core";
+import { getBooleanInput, getInput, getMultilineInput, info, setOutput, summary } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { Context } from "@actions/github/lib/context";
 import moment from "moment";
@@ -88,8 +88,14 @@ const runAction = async (ctx: Context) => {
         setOutput("data", JSON.stringify(cleanedData));
         const message = generateMarkdownMessage(staleIssues, repo);
         setOutput("message", message);
+
+        await summary.addHeading(`### Repo ${repo.owner}/${repo.repo} has ${amountOfStaleIssues} stale issues`).addTable([
+            [{ data: "Title", header: true }, { data: "Days stale", header: true }],
+            ...cleanedData.map(issue => [`[${issue.title}](${issue.url})`, issue.daysStale] as string[])
+        ]).addLink("See all issues", `https://github.com/${repo.owner}/${repo.repo}/issues`).write();
     } else {
         setOutput("message", `### Repo ${repo.owner}/${repo.repo} has no stale issues`);
+        await summary.addHeading(`### Repo ${repo.owner}/${repo.repo} has no stale issues`).write();
     }
 }
 
