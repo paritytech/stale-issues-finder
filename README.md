@@ -82,11 +82,11 @@ If you want this action to access to the issues in a private repository, then yo
 The authors field accepts an array or a single value, [but only with some particular format](https://github.com/actions/toolkit/issues/184#issuecomment-1198653452), so it is important to follow it.
 It accepts either:
 ```yml
-authors: username1
+ignoreAuthors: username1
 ```
 or an array of authors using a `pipe`:
 ```yml
-authors: |
+ignoreAuthors: |
   username1
   username2
   username3
@@ -94,12 +94,12 @@ authors: |
 It **does not** support the following type of arrays:
 ```yml
 # not this one
-authors:
+ignoreAuthors:
   - username1
   - username2
 
 # also doesn't support this one
-authors: ["username1", "username2"]
+ignoreAuthors: ["username1", "username2"]
 ```
 
 ### Outputs
