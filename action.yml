@@ -24,7 +24,7 @@ inputs:
     default: false
   ignoreAuthors:
     required: false
-    description: array of usernames that should be ignored if they are the author of the issue.
+    description: Collections of usernames separated by commas that should be ignored if they are the author of the issue.
     type: string
 outputs:
   repo:
@@ -38,4 +38,4 @@ outputs:
 
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/paritytech/stale-issues-finder/action:0.0.2'
+  image: 'docker://ghcr.io/paritytech/stale-issues-finder/action:0.0.3'

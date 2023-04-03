@@ -1,4 +1,4 @@
-import { getBooleanInput, getInput, getMultilineInput, info, setOutput, summary } from "@actions/core";
+import { getBooleanInput, getInput, info, setOutput, summary } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { Context } from "@actions/github/lib/context";
 import moment from "moment";
@@ -15,7 +15,11 @@ const getFiltersFromInput = (): Filters => {
 
     const noComments = !!getInput("noComments") ? getBooleanInput("noComments") : false;
 
-    const ignoreAuthors = getMultilineInput("ignoreAuthors");
+    let ignoreAuthors: string[] = [];
+    const authorsToIgnore = getInput("ignoreAuthors");
+    if (authorsToIgnore) {
+        ignoreAuthors = authorsToIgnore.split(",");
+    }
 
     return {
         daysStale, noComments, notFromAuthor: ignoreAuthors
