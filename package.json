@@ -1,6 +1,6 @@
 {
   "name": "stale-issues-finder",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Find what issues have been stale for a given time",
   "main": "src/index.ts",
   "engines": {
