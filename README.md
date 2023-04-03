@@ -66,7 +66,7 @@ You can find all the inputs in [the action file](./action.yml) but let's walk th
 - `noComments`: Boolean. If the action should only fetch issues that have 0 comments.
   - Short for `Ignore issues that have comments`.
   - **default**: false
-- `ignoreAuthors`: Array of usernames that, if an issue was created by them, will be ignored.
+- `ignoreAuthors`: Collections of usernames separated by commas that, if an issue was created by any of them, will be ignored.
   - Short for `Ignore issues coming from these authors`.
   - **optional**
   - **Important**: If set be sure to connect the names by comma.
