@@ -4,18 +4,21 @@ import moment from "moment";
 
 //** Handles the problem of pagination */
 const getAllIssues = async (octokit: InstanceType<typeof GitHub>, repo: Repo): Promise<IssueData[]> => {
-    const { data } = await octokit.rest.issues.listForRepo({ ...repo, per_page: 100, state: "open" });
+    let currentPage = 1;
+    const { data } = await octokit.rest.issues.listForRepo({ ...repo, per_page: 100, state: "open", page: currentPage });
     let issues = data;
     if (issues.length > 99) {
         let fullPage = issues.length > 99;
-        let currentPage = 2;
         while (fullPage) {
+            currentPage++;
+            debug(`Iterating on page ${currentPage} with ${issues.length} issues`);
             const { data } = await octokit.rest.issues.listForRepo({ ...repo, per_page: 100, page: currentPage, state: "open" });
             issues = issues.concat(data);
             fullPage = data.length > 99;
-            currentPage++;
         }
     }
+
+    debug(`Found a total of ${issues.length} issues`);
     return issues;
 }
 
