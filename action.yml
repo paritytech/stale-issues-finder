@@ -24,7 +24,7 @@ inputs:
     default: false
   ignoreAuthors:
     required: false
-    description: array of usernames that should be ignored if they are the author of the issue.
+    description: collections of usernames separated by commas that should be ignored if they are the author of the issue.
     type: string
 outputs:
   repo:
