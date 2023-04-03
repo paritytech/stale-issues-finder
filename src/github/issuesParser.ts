@@ -2,16 +2,21 @@ import { debug } from "@actions/core";
 import { GitHub } from "@actions/github/lib/utils";
 import moment from "moment";
 
+const listForRepo = (octokit: InstanceType<typeof GitHub>, repo: Repo, per_page: number = 100, page: number = 1) => {
+    return octokit.rest.issues.listForRepo({ ...repo, per_page, state: "open", page });
+}
+
 //** Handles the problem of pagination */
 const getAllIssues = async (octokit: InstanceType<typeof GitHub>, repo: Repo): Promise<IssueData[]> => {
+    const perPage = 100;
     let currentPage = 1;
-    const { data } = await octokit.rest.issues.listForRepo({ ...repo, per_page: 100, state: "open", page: currentPage });
+    const { data } = await listForRepo(octokit, repo, perPage, currentPage);
     let issues = data;
     let fullPage = issues.length > 99;
     while (fullPage) {
         currentPage++;
         debug(`Iterating on page ${currentPage} with ${issues.length} issues`);
-        const { data } = await octokit.rest.issues.listForRepo({ ...repo, per_page: 100, page: currentPage, state: "open" });
+        const { data } = await listForRepo(octokit, repo, perPage, currentPage)
         issues = issues.concat(data);
         fullPage = data.length > 99;
     }
