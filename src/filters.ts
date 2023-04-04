@@ -9,5 +9,5 @@ export const byNoComments = (issue: IssueData): boolean => {
 }
 
 export const isNotFromAuthor = ({ user }: IssueData, authors: string[]): boolean => {
-    return authors.some(author => author.toLowerCase() === user?.login.toLowerCase());
+    return !authors.some(author => author.toLowerCase() === user?.login.toLowerCase());
 }
