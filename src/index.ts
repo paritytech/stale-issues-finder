@@ -1,4 +1,4 @@
-import { getBooleanInput, getInput, info, setOutput, summary } from "@actions/core";
+import { debug, getBooleanInput, getInput, info, setOutput, summary } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 import { Context } from "@actions/github/lib/context";
 import moment from "moment";
@@ -49,6 +49,10 @@ const getRepo = (ctx: Context): { owner: string, repo: string } => {
 }
 
 const filterIssues = (issues: IssueData[], filters: Filters) => {
+    if (!issues || issues.length < 1) {
+        return [];
+    }
+
     let filteredData = issues;
     if (filters.daysStale) {
         filteredData = filteredData.filter(is => olderThanDays(is, filters.daysStale));
@@ -68,20 +72,22 @@ const runAction = async (ctx: Context) => {
     const token = getInput("GITHUB_TOKEN", { required: true });
 
     const filters = getFiltersFromInput();
+    debug(JSON.stringify(filters));
 
     const octokit = getOctokit(token);
     const staleIssues = await fetchIssues(octokit, repo);
 
-    const amountOfStaleIssues = staleIssues.length;
+    // we filter the issues and see how many are remaining
+    const filteredIssues = filterIssues(staleIssues, filters);
+
+    const amountOfStaleIssues = filteredIssues.length;
 
     info(`Found ${amountOfStaleIssues} stale issues.`);
     setOutput("repo", `${repo.owner}/${repo.repo}`);
     setOutput("stale", amountOfStaleIssues);
 
     if (amountOfStaleIssues > 0) {
-        const filteredData = filterIssues(staleIssues, filters);
-
-        let cleanedData = filteredData.map(issue => {
+        let cleanedData = filteredIssues.map(issue => {
             return {
                 url: issue.html_url,
                 title: issue.title,
@@ -90,8 +96,10 @@ const runAction = async (ctx: Context) => {
             }
         });
 
-        setOutput("data", JSON.stringify(cleanedData));
-        const message = generateMarkdownMessage(staleIssues, repo);
+        const jsonData = JSON.stringify(cleanedData)
+        setOutput("data", jsonData);
+        debug(jsonData);
+        const message = generateMarkdownMessage(filteredIssues, repo);
         setOutput("message", message);
 
         await summary.addHeading(`${repo.owner}/${repo.repo}`)
@@ -103,7 +111,7 @@ const runAction = async (ctx: Context) => {
             .addLink("See all issues", `https://github.com/${repo.owner}/${repo.repo}/issues`).write();
     } else {
         setOutput("message", `### Repo ${repo.owner}/${repo.repo} has no stale issues`);
-        await summary.addHeading(`${repo.owner}/${repo.repo}`).addHeading("No stale issues", 3).addEOL().write();
+        info(`Repo ${repo.owner}/${repo.repo} has no stale issues`);
     }
 }
 
