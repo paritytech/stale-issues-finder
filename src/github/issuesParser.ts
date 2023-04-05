@@ -11,7 +11,9 @@ const getAllIssues = async (octokit: InstanceType<typeof GitHub>, repo: Repo): P
     const perPage = 100;
     let currentPage = 1;
     const { data } = await listForRepo(octokit, repo, perPage, currentPage);
-    let issues = data;
+
+    // GitHub's REST API v3 considers every pull request an issue so we need to get objects without the PR key
+    let issues = data.filter(data => !data.pull_request);
     let fullPage = issues.length > 99;
     while (fullPage) {
         currentPage++;
