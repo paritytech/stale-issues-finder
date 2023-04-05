@@ -38,4 +38,4 @@ outputs:
 
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/paritytech/stale-issues-finder/action:0.0.5'
+  image: 'docker://ghcr.io/paritytech/stale-issues-finder/action:0.0.6'
