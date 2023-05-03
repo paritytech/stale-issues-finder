@@ -34,5 +34,5 @@ export const fetchIssues = async (octokit: InstanceType<typeof GitHub>, repo: Re
   return issues.sort((a, b) => (b.updated_at > a.updated_at ? -1 : b.updated_at < a.updated_at ? 1 : 0));
 };
 
-export const filterByDays = (issues: IssueData[], daysStale: number): Promise<IssueData[]> =>
+export const filterByDays = (issues: IssueData[], daysStale: number): IssueData[] =>
   issues.filter((issue) => moment().diff(moment(issue.updated_at), "days") > daysStale);
