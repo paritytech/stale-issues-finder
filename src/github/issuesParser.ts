@@ -1,6 +1,6 @@
 import { debug } from "@actions/core";
-import { GitHub } from "@actions/github/lib/utils";
-import moment from "moment";
+import { GitHub } from "@actions/github-types";
+import { moment } from "moment";
 
 const listForRepo = (octokit: InstanceType<typeof GitHub>, repo: Repo, per_page: number = 100, page: number = 1) =>
   octokit.rest.issues.listForRepo({ ...repo, per_page, state: "open", page });

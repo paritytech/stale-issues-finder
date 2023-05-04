@@ -1,10 +1,10 @@
 import { debug, getBooleanInput, getInput, info, setOutput, summary } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
-import { Context } from "@actions/github/lib/context";
-import moment from "moment";
+import { Context } from "@actions/github-types";
+import { moment } from "moment";
 
-import { byNoComments, isNotFromAuthor, olderThanDays } from "./filters";
-import { fetchIssues } from "./github/issuesParser";
+import { byNoComments, isNotFromAuthor, olderThanDays } from "./filters.ts";
+import { fetchIssues } from "./github/issuesParser.ts";
 
 const daysSinceDate = (date: string): number => moment().diff(moment(date), "days");
 

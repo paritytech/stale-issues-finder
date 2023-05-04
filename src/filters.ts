@@ -1,4 +1,4 @@
-import moment from "moment";
+import { moment } from "moment";
 
 export const olderThanDays = (issue: IssueData, daysStale: number): boolean =>
   moment().diff(moment(issue.updated_at), "days") > daysStale;

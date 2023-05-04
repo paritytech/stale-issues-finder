@@ -1,0 +1,8 @@
+{
+    "imports": {
+        "@actions/core": "npm:@actions/core",
+        "moment": "https://deno.land/x/deno_moment@v1.1.2/mod.ts",
+        "@actions/github": "npm:@actions/github@^5.1.1",
+        "@actions/github-types": "npm:@actions/github@^5.1.1/lib/context"
+    }
+}
