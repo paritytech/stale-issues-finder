@@ -1,6 +1,7 @@
 import { debug } from "@actions/core";
 import { getOctokit } from "@actions/github";
 import { moment } from "moment";
+import { Repo, IssueData } from "../types.ts";
 
 const listForRepo = (octokit: ReturnType<typeof getOctokit>, repo: Repo, per_page: number = 100, page: number = 1) =>
   octokit.rest.issues.listForRepo({ ...repo, per_page, state: "open", page });
@@ -26,7 +27,7 @@ const getAllIssues = async (octokit: ReturnType<typeof getOctokit>, repo: Repo):
   return issues;
 };
 
-export const fetchIssues = async (octokit:  ReturnType<typeof getOctokit>, repo: Repo): Promise<IssueData[]> => {
+export const fetchIssues = async (octokit: ReturnType<typeof getOctokit>, repo: Repo): Promise<IssueData[]> => {
   const issues = await getAllIssues(octokit, repo);
   debug(`Found elements ${issues.length}`);
 

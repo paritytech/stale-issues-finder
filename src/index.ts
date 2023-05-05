@@ -4,6 +4,7 @@ import { moment } from "moment";
 
 import { byNoComments, isNotFromAuthor, olderThanDays } from "./filters.ts";
 import { fetchIssues } from "./github/issuesParser.ts";
+import { Filters, IssueData, Repo } from "./types.ts";
 
 const daysSinceDate = (date: string): number => moment().diff(moment(date), "days");
 
