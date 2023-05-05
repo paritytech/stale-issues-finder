@@ -20,9 +20,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.3.0
-      - run: yarn install --frozen-lockfile
-      - run: yarn lint
-      - run: yarn build
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - run: deno install src/index.ts
+      - run: deno test
+      - run: deno fmt --check
 
   test-versions:
     runs-on: ubuntu-latest

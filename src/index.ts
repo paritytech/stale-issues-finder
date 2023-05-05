@@ -1,10 +1,10 @@
 import { debug, getBooleanInput, getInput, info, setOutput, summary } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
-import { Context } from "@actions/github/lib/context";
-import moment from "moment";
+import { moment } from "moment";
 
-import { byNoComments, isNotFromAuthor, olderThanDays } from "./filters";
-import { fetchIssues } from "./github/issuesParser";
+import { byNoComments, isNotFromAuthor, olderThanDays } from "./filters.ts";
+import { fetchIssues } from "./github/issuesParser.ts";
+import { Filters, IssueData, Repo } from "./types.ts";
 
 const daysSinceDate = (date: string): number => moment().diff(moment(date), "days");
 
@@ -30,15 +30,15 @@ const generateMarkdownMessage = (issues: IssueData[], repo: { owner: string; rep
   return `### Repo ${repo.owner}/${repo.repo} has ${issues.length} stale issues\n${messages.join("\n")}`;
 };
 
-const getRepo = (ctx: Context): { owner: string; repo: string } => {
+const getRepo = (ctx: Repo): { owner: string; repo: string } => {
   let repo = getInput("repo", { required: false });
   if (!repo) {
-    repo = ctx.repo.repo;
+    repo = ctx.repo;
   }
 
   let owner = getInput("owner", { required: false });
   if (!owner) {
-    owner = ctx.repo.owner;
+    owner = ctx.owner;
   }
 
   return { repo, owner };
@@ -63,8 +63,7 @@ const filterIssues = (issues: IssueData[] | undefined, filters: Filters) => {
   return filteredData;
 };
 
-const runAction = async (ctx: Context) => {
-  const repo = getRepo(ctx);
+const runAction = async (repo: Repo) => {
   const token = getInput("GITHUB_TOKEN", { required: true });
 
   const filters = getFiltersFromInput();
@@ -120,4 +119,5 @@ const runAction = async (ctx: Context) => {
   }
 };
 
-runAction(context);
+const repo = getRepo(context.repo);
+runAction(repo);

@@ -1,5 +1,4 @@
-declare global {
-  interface IssueData {
+export interface IssueData {
     html_url: string;
     title: string;
     created_at: string;
@@ -8,18 +7,15 @@ declare global {
     comments: number;
     /** If user was deleted it is going to be null */
     user: { login: string } | null;
-  }
+}
 
-  interface Repo {
+export interface Repo {
     owner: string;
     repo: string;
-  }
+}
 
-  interface Filters {
+export interface Filters {
     noComments?: boolean;
     daysStale: number;
     notFromAuthor: string[];
-  }
 }
-
-export {};
