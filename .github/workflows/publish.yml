@@ -24,8 +24,8 @@ jobs:
         with:
           deno-version: v1.x
       - run: deno install
+      - run: deno test
       - run: deno fmt --check
-      - run: yarn build
 
   test-versions:
     runs-on: ubuntu-latest
