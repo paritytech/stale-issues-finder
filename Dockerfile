@@ -1,17 +1,9 @@
-FROM node:18 as Builder
+FROM denoland/deno
 
 WORKDIR /action
 
-COPY package.json yarn.lock ./
-
-RUN yarn install --frozen-lockfile
-
 COPY . .
 
-RUN yarn run build
+RUN deno install src/index.ts
 
-FROM node:18-slim
-
-COPY --from=Builder /action/dist /action
-
-ENTRYPOINT ["node", "/action/index.js"]
+ENTRYPOINT ["deno", "run", "--allow-env", "--allow-read", "--allow-net", "./src/index.ts"]
