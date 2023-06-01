@@ -23,7 +23,7 @@ const getFiltersFromInput = (): Filters => {
   let requiredLabels: string[] = [];
   const labels = getInput("requiredLabels");
   if (labels) {
-  	requiredLabels = labels.split(",");
+    requiredLabels = labels.split(",");
   }
 
   return { daysStale, noComments, notFromAuthor: ignoreAuthors, requiredLabels };
@@ -65,8 +65,8 @@ const filterIssues = (issues: IssueData[] | undefined, filters: Filters) => {
   if (filters.notFromAuthor.length > 0) {
     filteredData = filteredData.filter((is) => isNotFromAuthor(is, filters.notFromAuthor));
   }
-  if (filters.requiredLabels && filters.requiredLabels.length > 0) {
-	filteredData = filteredData.filter(fd => byLabels(fd, filters.requiredLabels));
+  if (filters.requiredLabels?.length > 0) {
+    filteredData = filteredData.filter((fd) => byLabels(fd, filters.requiredLabels));
   }
 
   return filteredData;

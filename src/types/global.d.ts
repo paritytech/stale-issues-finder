@@ -28,7 +28,7 @@ declare global {
     url: string;
     name: string;
     description: string;
-}
+  }
 }
 
 export {};
