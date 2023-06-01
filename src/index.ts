@@ -3,7 +3,7 @@ import { context, getOctokit } from "@actions/github";
 import { Context } from "@actions/github/lib/context";
 import moment from "moment";
 
-import { byNoComments, isNotFromAuthor, olderThanDays } from "./filters";
+import { byLabels, byNoComments, isNotFromAuthor, olderThanDays } from "./filters";
 import { fetchIssues } from "./github/issuesParser";
 
 const daysSinceDate = (date: string): number => moment().diff(moment(date), "days");
@@ -20,7 +20,13 @@ const getFiltersFromInput = (): Filters => {
     ignoreAuthors = authorsToIgnore.split(",");
   }
 
-  return { daysStale, noComments, notFromAuthor: ignoreAuthors };
+  let requiredLabels: string[] = [];
+  const labels = getInput("requiredLabels");
+  if (labels) {
+  	requiredLabels = labels.split(",");
+  }
+
+  return { daysStale, noComments, notFromAuthor: ignoreAuthors, requiredLabels };
 };
 
 const generateMarkdownMessage = (issues: IssueData[], repo: { owner: string; repo: string }) => {
@@ -58,6 +64,9 @@ const filterIssues = (issues: IssueData[] | undefined, filters: Filters) => {
   }
   if (filters.notFromAuthor.length > 0) {
     filteredData = filteredData.filter((is) => isNotFromAuthor(is, filters.notFromAuthor));
+  }
+  if (filters.requiredLabels && filters.requiredLabels.length > 0) {
+	filteredData = filteredData.filter(fd => byLabels(fd, filters.requiredLabels));
   }
 
   return filteredData;
