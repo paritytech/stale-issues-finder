@@ -26,6 +26,10 @@ inputs:
     required: false
     description: Collections of usernames separated by commas that should be ignored if they are the author of the issue.
     type: string
+  requiredLabels:
+    required: false
+    description: Collections of labels separated by commas that should be required when searching for a issue.
+    type: string
 outputs:
   repo:
     description: 'The name of the repo in owner/repo pattern'
