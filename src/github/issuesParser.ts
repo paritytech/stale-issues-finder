@@ -22,8 +22,28 @@ const getAllIssues = async (octokit: InstanceType<typeof GitHub>, repo: Repo): P
     fullPage = data.length > 99;
   }
 
+  // parse the label data
+  const parsedIssues = issues.map((issue) => {
+    const labels: Label[] = [];
+    for (const label of issue.labels) {
+      let parsedLabel: Label;
+      if (typeof label === "string") {
+        parsedLabel = { id: 0, name: label, description: label, url: "" };
+      } else {
+        parsedLabel = {
+          id: label.id ?? 0,
+          name: label.name ?? "",
+          description: label.description ?? "",
+          url: label.url ?? "",
+        };
+      }
+      labels.push(parsedLabel);
+    }
+    return { ...issue, labels };
+  });
+
   debug(`Found a total of ${issues.length} issues`);
-  return issues;
+  return parsedIssues;
 };
 
 export const fetchIssues = async (octokit: InstanceType<typeof GitHub>, repo: Repo): Promise<IssueData[]> => {
