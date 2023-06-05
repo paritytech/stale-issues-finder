@@ -8,6 +8,7 @@ declare global {
     comments: number;
     /** If user was deleted it is going to be null */
     user: { login: string } | null;
+    labels: Label[];
   }
 
   interface Repo {
@@ -19,6 +20,14 @@ declare global {
     noComments?: boolean;
     daysStale: number;
     notFromAuthor: string[];
+    requiredLabels: string[];
+  }
+
+  interface Label {
+    id: number;
+    url: string;
+    name: string;
+    description: string;
   }
 }
 

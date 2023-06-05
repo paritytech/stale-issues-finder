@@ -74,6 +74,14 @@ You can find all the inputs in [the action file](./action.yml) but let's walk th
     - It is **not** _case sensitive_.
   - It works great in conjuction with [`paritytech/list-team-members`](https://github.com/paritytech/list-team-members)
     - It can use the output directly to ignore any issues made by a member of a team.
+- `requiredLabels`: Collections of labels separated by commas that should be required when searching for a PR.
+  - Only needs to have one of the included labels.
+    - If you have labels: `A,B` the issue will be taken into consideration if it has: `A`, `B` or both `A` and `B`.
+  - Short for `Only include issues with at least one of the required labels`.
+  - **optional**
+  - **Important**: If set be sure to connect the names by comma.
+    - Example: `feature,bug,good first issue`
+    - It is **not** _case sensitive_.
 
 #### Accessing other repositories
 
