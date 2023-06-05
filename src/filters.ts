@@ -8,5 +8,5 @@ export const byNoComments = (issue: IssueData): boolean => issue.comments === 0;
 export const isNotFromAuthor = ({ user }: IssueData, authors: string[]): boolean =>
   !authors.some((author) => author.toLowerCase() === user?.login.toLowerCase());
 
-export const byLabels = (issue: IssueData, labels: string[]): boolean =>
-  issue.labels?.map((l) => l.name.toLowerCase()).some((l) => labels.map((lb) => lb.toLowerCase()).includes(l));
+export const byLabels = (issue: IssueData, requiredLabels: string[]): boolean =>
+  issue.labels?.map((l) => l.name.toLowerCase()).some((l) => requiredLabels.map((lb) => lb.toLowerCase()).includes(l));
